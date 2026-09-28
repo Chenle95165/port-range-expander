@@ -21,3 +21,10 @@ A deliberate trade-off is the return type: a sorted `set` rather than a list. Po
 Reversed ranges such as `'8000-7000'` are treated as empty rather than raising an error. This matches the behaviour of many command-line tools that silently ignore reversed ranges, but it means a typo can produce an unexpectedly empty set. If you need stricter validation, check for empty output after parsing.
 
 Malformed input — empty strings, non-integer tokens, missing range endpoints, negative ports — raises `PortRangeError`, a subclass of `ValueError`.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
